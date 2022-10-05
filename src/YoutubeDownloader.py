@@ -1,55 +1,54 @@
+from yt_dlp import YoutubeDL
 from typing import *
-from pytube import *
-from tkinter import filedialog
+from pytube import Playlist
 import os, moviepy.editor as mp
 
-class Downloader(YouTube):
-    def __init__(self, url: str, on_progress_callback: Optional[Callable[[Any, bytes, int], None]] = None, on_complete_callback: Optional[Callable[[Any, Optional[str]], None]] = None, proxies: Dict[str, str] = None, use_oauth: bool = False, allow_oauth_cache: bool = True):
-        super().__init__(url, on_progress_callback, on_complete_callback, proxies, use_oauth, allow_oauth_cache) # indica el enlace
 
-
-    def VideoDownloader(self, file_extension:str = "mp4", output: dir = ""):
-        """Descarga el video en la mayor calidad posible."""
-        video = super().streams.filter(progressive=True, file_extension=f"{file_extension}").order_by("resolution").desc().first()
-        self.destination = video.download(output)
-
-    def MusicDownloader(self, output: dir = ""):
-        video = super().streams.filter(only_audio=True).last()
-        self.destination = video.download(output)
-        out_file = self.destination
-        base, ext = os.path.splitext(out_file)
-        clip = mp.AudioFileClip(f'{base}{ext}')
-        clip.write_audiofile(f"{base}.mp3")
-        clip.close()
-        os.remove(out_file)
-
-
-    def __del__(self):
-        print(super().title, "Se ha descargado satifactoriamente.")
-        
-
-class PlaylistDownloader(Playlist):
-    def __init__(self, url: str, proxies: Optional[Dict[str, str]] = None):
-        self.url = url
-        super().__init__(self.url, proxies)
-        
-    def VideoDowloader(self, output: dir = ""):
-        try:
-            for video in super().videos:
-                down = Downloader(video.watch_url,use_oauth=True)
-                down.VideoDownloader("mp4", output)
-                del down
-        except KeyError:
-            print(f"{self.url} No es una playlist de YouTube")
+class Download(object):
+    """Permite descargar los videos"""
+    def __init__(self, url, dir:dir = '', playlist = False):
+      self.url = url
+      self.playlist = playlist
+      self.__dir = dir
     
-    def MusicDownloader(self, output: dir = ""):
+    def mp3_download(self):
+        opts = {
+            'format': 'wav/m4a/mp4',
+            'ignoreerrors': True,
+            "verbose": False,
+            "extract-audio": True,
+            "audio-format": "{ext}",
+            "outtmpl": f"{self.__dir}/%(title)s.%(ext)s",
+        }
+        Download_obj = YoutubeDL(opts)
+        __info_dict = Download_obj.extract_info(self.url, download= True)
+        audio_file = Download_obj.prepare_filename(__info_dict)
         try:
-            for video in super().videos:
-                down = Downloader(video.watch_url, use_oauth=True)
-                down.MusicDownloader(output)
-                del down
-        except KeyError:
-            print(f"{self.url} No es una playlist de YouTube")
+            base, ext = os.path.splitext(f"{audio_file}")
+            clip = mp.AudioFileClip(f'{base}{ext}')
+            clip.write_audiofile(f"{base}.mp3")
+            clip.close()
+            os.remove(f"{audio_file}")
+        except Exception as e:
+            print(e)
+
+class PlaylistDownloader(Download, Playlist):
+    def __init__(self, url, dir: dir = "",playlist=False):
+        for video in Playlist(url).videos:            
+            dl = Download(video.watch_url, dir, playlist)
+            dl.mp3_download()
+            
+    def mp3_download(self):
+        return super().mp3_download()
+
+    
+
+
+
+test = PlaylistDownloader("https://www.youtube.com/playlist?list=PLwV5x4pHjcTBSOrjT7Dh-tyo9qmE2Asrb", dir = 'E:/Música')
+
+
+test = PlaylistDownloader("https://www.youtube.com/playlist?list=PLwV5x4pHjcTBSOrjT7Dh-tyo9qmE2Asrb", dir = 'E:/Música')
 
 if __name__ == "__main__": 
     url = input("Inserte el url: ")
