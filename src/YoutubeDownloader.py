@@ -4,57 +4,88 @@ from pytube import Playlist
 import os, moviepy.editor as mp
 
 
-class Download(object):
+class Downloader(object):
     """Permite descargar los videos"""
-    def __init__(self, url, dir:dir = '', playlist = False):
-      self.url = url
-      self.playlist = playlist
-      self.__dir = dir
-    
+    def __init__(self, url, dir:dir = ''):
+        self.url = url      
+        self.__dir = dir
+        if "playlist?list=" in self.url or "index=" in self.url:
+            del self.mp3_download
+            del self.mp4_download
+
     def mp3_download(self):
+        """Descarga el audio del video"""
+
         opts = {
-            'format': 'wav/m4a/mp4',
-            'ignoreerrors': True,
+            "format": 'bestaudio/best',
             "verbose": False,
-            "extract-audio": True,
-            "audio-format": "{ext}",
-            "outtmpl": f"{self.__dir}/%(title)s.%(ext)s",
+            "extract-audio": True, 
+            "fixup": 'never',
+            "ignoreerrors": True,
+            "noplaylist": True,
+            "outtmpl": f'{self.__dir}/%(title)s.%(ext)s'
         }
         Download_obj = YoutubeDL(opts)
         __info_dict = Download_obj.extract_info(self.url, download= True)
-        audio_file = Download_obj.prepare_filename(__info_dict)
-        try:
-            base, ext = os.path.splitext(f"{audio_file}")
-            clip = mp.AudioFileClip(f'{base}{ext}')
-            clip.write_audiofile(f"{base}.mp3")
-            clip.close()
-            os.remove(f"{audio_file}")
-        except Exception as e:
-            print(e)
+        self.__file = Download_obj.prepare_filename(__info_dict)
+        self.__fixup()
 
-class PlaylistDownloader(Download, Playlist):
-    def __init__(self, url, dir: dir = "",playlist=False):
-        for video in Playlist(url).videos:            
-            dl = Download(video.watch_url, dir, playlist)
-            dl.mp3_download()
-            
+    def mp4_download(self):
+        """Descarga el video"""
+        opts = {
+            "verbose": False,
+            "fixup": "never",
+            "ignoreerrors": True,
+            "noplaylist": False,
+            "outtmpl": f'{self.__dir}/%(title)s.%(ext)s'
+        }
+        YoutubeDL(opts).download(self.url)
+
+
+
+    def __fixup(self):
+        """Cambia el formato del audio a .mp3"""
+        try:
+            base, ext = os.path.splitext(f"{self.__file}")
+            clip = mp.AudioFileClip(f'{base}{ext}')
+            clip.write_audiofile(f"{base}.mp3",)
+            clip.close()
+            os.remove(self.__file)
+        except OSError:
+            os.remove
+
+    def __del__(self):
+        pass
+
+
+class PlaylistDownloader:
+    """Permite la descarga de las playlist"""
+    def __init__(self, url, dir: dir = ""):
+        """Obtiene el enlace de cada uno de los videos
+        que se encuentren en la playlist"""
+        try:
+            self.__url = url
+            self.__dir = dir
+            self.__playlist = Playlist(self.__url)
+        except:
+            pass
+
     def mp3_download(self):
-        return super().mp3_download()
+        for video in self.__playlist.videos:            
+            Downloader(video.watch_url, self.__dir).mp3_download()
+
+    def mp4_download(self):
+        for video in self.__playlist.videos:            
+            Downloader(video.watch_url, self.__dir).mp4_download()
+
+
+if __name__ == "__main__":
+    test = PlaylistDownloader("https://www.youtube.com/watch?v=ltO7uyLImGg","/src")
+    test.mp4_download()
 
     
 
 
-
-test = PlaylistDownloader("https://www.youtube.com/playlist?list=PLwV5x4pHjcTBSOrjT7Dh-tyo9qmE2Asrb", dir = 'E:/Música')
-
-
-test = PlaylistDownloader("https://www.youtube.com/playlist?list=PLwV5x4pHjcTBSOrjT7Dh-tyo9qmE2Asrb", dir = 'E:/Música')
-
-if __name__ == "__main__": 
-    url = input("Inserte el url: ")
-    test = Downloader(url,use_oauth=True)
-    output = filedialog.askdirectory()
-    test.MusicDownloader(output)
 
 
 
