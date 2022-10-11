@@ -1,0 +1,6 @@
+Brotli==1.0.9
+certifi==2022.9.24
+mutagen==1.46.0
+pycryptodomex==3.15.0
+websockets==10.3
+yt-dlp==2022.10.4
