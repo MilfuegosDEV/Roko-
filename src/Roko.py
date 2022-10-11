@@ -2,10 +2,7 @@ from Downloader \
     import YTDownload
 
 from tkinter \
-    import *
-
-from tkinter \
-    import filedialog, messagebox
+    import filedialog, messagebox, END, Label, Canvas, Tk, PhotoImage, Entry
 
 import webbrowser
 
