@@ -21,14 +21,16 @@
 
 ### Métodos de instalación: 
 
-#### Descarga **Roko!** 📦:
+
+#### Primer método:
+##### Descarga **Roko!** 📦:
 1. **En Windows** 💻:
 
     Haz click [aquí](https://github.com/MilfuegosxD/Roko-/releases/tag/v1.0.1) para descargar **Roko! v1.0.1** e instalar.🎵
 
 
-
-#### Clona el repositorio 📚:
+#### Segundo método:
+##### Clona el repositorio 📚:
 > Verifica de tener [Python](https://www.python.org/downloads/release/python-3107/) y [Git](https://git-scm.com/download) instalados en tu equipo 😁
 
 1. Clona el repositorio 🧲:
