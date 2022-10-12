@@ -6,3 +6,6 @@
 
 # pychache
 __pycache__/
+
+# output
+output/
