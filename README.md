@@ -2,7 +2,7 @@
 
 ## Acerca de **Roko!**
 
-**Roko!** es un programa que te permite playlist y videos de **YouTube** de manera sencilla.
+**Roko!** es un programa que te permite descargar playlist y videos de **YouTube** de manera sencilla.
 
 #### ¿Qué puedes hacer con **Roko!**? 🤯
 
