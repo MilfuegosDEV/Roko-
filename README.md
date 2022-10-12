@@ -99,4 +99,4 @@ No, por el momento no hemos implementado esa opción.
 
 
 
-Desarrollado por: @MilfuegosxD
+Desarrollado por: [MilfuegosxD](https://github.com/MilfuegosxD)
