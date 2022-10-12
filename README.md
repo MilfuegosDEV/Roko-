@@ -90,9 +90,11 @@
              python3 src\Roko.py
 #### Preguntas frecuentes:
 - ¿Por qué mi video no ha sido descargado?
-Lo más probable es que le video sea privado o que no esté disponible en el país.
+
+Lo más probable es que el video sea privado o que no esté disponible en el país.
 
 - ¿Se le puede bajar la calidad al video o audio?
+
 No, por el momento no hemos implementado esa opción.
 
 
