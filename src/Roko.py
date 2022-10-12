@@ -99,6 +99,8 @@ def centrar_fun():
 window = Tk()
 centrar_fun()
 window.configure(bg = "#ffffff")
+ICO = PhotoImage(file = "src/assets/Roko.png")
+window.iconphoto(True, ICO)
 window.title("Roko!")
 
 # --- Setting Canvas --- #
